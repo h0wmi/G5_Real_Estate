@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Original colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Purple Theme Colors -->
+    <color name="primary_purple">#8B7CF6</color>
+    <color name="primary_purple_dark">#7C3AED</color>
+    <color name="secondary_purple">#A78BFA</color>
+    <color name="light_purple">#C4B5FD</color>
+
+    <!-- Background Colors -->
+    <color name="background_gradient_start">#8B7CF6</color>
+    <color name="background_gradient_end">#7C3AED</color>
+
+    <!-- Card Colors -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_background_secondary">#F8FAFC</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Button Colors -->
+    <color name="button_primary">#8B7CF6</color>
+    <color name="button_primary_pressed">#7C3AED</color>
+    <color name="button_secondary">#E5E7EB</color>
+    <color name="button_secondary_pressed">#D1D5DB</color>
+</resources>
