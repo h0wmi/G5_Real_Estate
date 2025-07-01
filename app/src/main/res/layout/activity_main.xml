@@ -24,7 +24,6 @@
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="40dp"
-            android:backgroundTint="@color/light_purple"
             android:backgroundTintMode="multiply">
 
             <TextView
@@ -43,7 +42,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="40dp"
                 android:background="@drawable/custom_edittext"
-                android:backgroundTint="@color/white"
                 android:drawableStart="@drawable/user"
                 android:drawablePadding="8dp"
                 android:hint="Username"
@@ -56,8 +54,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/custom_edittext"
-
-                android:backgroundTint="@color/white"
                 android:drawableStart="@drawable/lock"
                 android:drawablePadding="8dp"
                 android:hint="Password"

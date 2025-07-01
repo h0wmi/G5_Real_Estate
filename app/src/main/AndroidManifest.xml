@@ -13,6 +13,12 @@
         android:theme="@style/Theme.MenuActivity"
         tools:targetApi="31">
         <activity
+            android:name=".HouseDetails"
+            android:exported="false" />
+        <activity
+            android:name=".pDetail"
+            android:exported="false" />
+        <activity
             android:name=".Menu"
             android:exported="false" />
         <activity

@@ -3,6 +3,7 @@
     <!-- Original colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="lblack">#555555</color>
 
     <!-- Purple Theme Colors -->
     <color name="primary_purple">#8B7CF6</color>

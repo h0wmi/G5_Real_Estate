@@ -1,74 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     android:background="@drawable/loginbkg"
     tools:context=".AddPersonnel">
 
-    <!-- Background Image Placeholder -->
-    <ImageView
-        android:id="@+id/backgroundImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/loginbkg"
-        android:alpha="0.3" />
-
-    <!-- Main Content Card -->
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginHorizontal="32dp"
+        android:layout_width="300dp"
+        android:layout_height="380dp"
         app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
-        android:backgroundTint="@color/card_background">
+        android:layout_margin="40dp"
+        app:cardElevation="0dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="350dp"
+            android:layout_height="380dp"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTintMode="multiply"
             android:orientation="vertical"
-            android:padding="40dp"
-            android:gravity="center">
+            android:padding="40dp">
 
-            <!-- Add Personnel Title -->
             <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Personnel"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="40dp"
-                android:gravity="center" />
-
-            <!-- Content Placeholder -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Personnel form will go here"
-                android:textSize="16sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="40dp"
-                android:gravity="center"
-                android:alpha="0.7" />
-
-            <!-- Back Button -->
-            <Button
-                android:id="@+id/btn9"
+                android:id="@+id/InsertField"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="← Back"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:background="@drawable/button_secondary"
-                android:elevation="2dp" />
+                android:layout_height="wrap_content"
+                android:text="Enter Data"
+                android:textAlignment="center"
+                android:textColor="@color/primary_purple"
+                android:textSize="36sp"
+                android:textStyle="bold" />
 
+            <EditText
+                android:id="@+id/prsn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/custom_edittext"
+                android:drawableStart="@drawable/user"
+                android:drawablePadding="8dp"
+                android:hint="Personnel Name"
+                android:padding="8dp"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/idnum"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/custom_edittext"
+                android:drawableStart="@drawable/lock"
+                android:drawablePadding="8dp"
+                android:hint="Id Number"
+                android:inputType="number"
+                android:padding="8dp"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/back"
+                    android:layout_width="110dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="50dp"
+                    android:backgroundTint="@color/primary_purple"
+                    android:text="Back"
+                    android:textSize="18sp"
+                    app:cornerRadius="20dp" />
+
+                <Button
+                    android:id="@+id/btnsave"
+                    android:layout_width="110dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/primary_purple"
+                    android:text="save"
+                    android:textSize="18sp"
+                    app:cornerRadius="20dp" />
+            </LinearLayout>
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
-</RelativeLayout>
+
+
+
+
+</LinearLayout>
