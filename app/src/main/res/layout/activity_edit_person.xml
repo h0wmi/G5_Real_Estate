@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/loginbkg"
-    tools:context=".pDetail">
+    tools:context=".EditPerson">
 
     <androidx.cardview.widget.CardView
         android:layout_width="300dp"
@@ -26,51 +26,52 @@
             android:backgroundTintMode="multiply">
 
             <TextView
-                android:id="@+id/nameText"
-                android:textSize="18sp"
-                android:layout_width="270dp"
-                android:layout_marginTop="60dp"
-                android:hint="Personnel Name:"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit Person"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="30dp" />
 
-            <TextView
-                android:id="@+id/idText"
-                android:textSize="18sp"
-                android:layout_marginTop="20dp"
+            <EditText
+                android:id="@+id/nameInput"
                 android:layout_width="270dp"
-                android:hint="ID Number:"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="Personnel Name"
+                android:textSize="16sp"
+                android:layout_marginBottom="20dp"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/idInput"
+                android:layout_width="270dp"
+                android:layout_height="wrap_content"
+                android:hint="ID Number"
+                android:textSize="16sp"
+                android:layout_marginBottom="40dp"
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/btnUpdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/primary_purple"
                 android:text="Update"
                 android:textSize="18sp"
-                app:cornerRadius="20dp" />
+                android:backgroundTint="@color/primary_purple"
+                app:cornerRadius="20dp"
+                android:layout_marginBottom="10dp" />
 
             <Button
-                android:id="@+id/btnDelete"
+                android:id="@+id/btnCancel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:text="Delete"
+                android:text="Cancel"
                 android:textSize="18sp"
-                app:cornerRadius="20dp" />
-
-            <Button
-                android:id="@+id/back"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:backgroundTint="@android:color/darker_gray"
-                android:text="Back"
-                android:textSize="18sp"
                 app:cornerRadius="20dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 </LinearLayout>
