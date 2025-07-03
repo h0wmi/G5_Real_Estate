@@ -3,13 +3,8 @@ package com.example.menuactivity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -18,43 +13,69 @@ class AddHouse : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_house)
 
-        val houseNumInput = findViewById<EditText>(R.id.hnum)
         val addressInput = findViewById<EditText>(R.id.add)
-        val saveBtn = findViewById<Button>(R.id.btnsave)
-        val exitbtn = findViewById<Button>(R.id.back)
+        val priceInput = findViewById<EditText>(R.id.etPrice)
+        val commissionInput = findViewById<EditText>(R.id.etCommission)
+        val downpaymentInput = findViewById<EditText>(R.id.etDownpayment)
 
-        exitbtn.setOnClickListener {
+        val paymentOptionGroup = findViewById<RadioGroup>(R.id.rgPaymentOption)
+        val saveBtn = findViewById<Button>(R.id.btnsave)
+        val backBtn = findViewById<Button>(R.id.back)
+
+        // Show/hide downpayment input based on payment option
+        paymentOptionGroup.setOnCheckedChangeListener { _, checkedId ->
+            downpaymentInput.visibility =
+                if (checkedId == R.id.rbDownpayment) View.VISIBLE else View.GONE
+        }
+
+        backBtn.setOnClickListener {
             finish()
         }
 
         saveBtn.setOnClickListener {
-            val houseNum = houseNumInput.text.toString()
-            val address = addressInput.text.toString()
+            val address = addressInput.text.toString().trim()
+            val price = priceInput.text.toString().toDoubleOrNull()
+            val commission = commissionInput.text.toString().toDoubleOrNull()
 
-            if (houseNum.isNotBlank() && address.isNotBlank()) {
-                val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                //Initialize json library
-                val gson = Gson()
+            val isDownpayment = paymentOptionGroup.checkedRadioButtonId == R.id.rbDownpayment
+            val paymentOption = if (isDownpayment) "Downpayment" else "Full Payment"
+            val downpayment = if (isDownpayment) {
+                downpaymentInput.text.toString().toDoubleOrNull()
+            } else null
 
-                // Load existing list
-                val json = sharedPref.getString("addressList", null)
-                //data type specifier
-                val type = object : TypeToken<MutableList<Address>>() {}.type
-                val addressList: MutableList<Address> =
-                    if (json != null) gson.fromJson(json, type) else mutableListOf()
-
-                // Add new address
-                addressList.add(Address(houseNum, address))
-
-                // Save updated list
-                val updatedJson = gson.toJson(addressList)
-                sharedPref.edit().putString("addressList", updatedJson).apply()
-
-                Toast.makeText(this, "Address saved!", Toast.LENGTH_SHORT).show()
-                finish()
-            } else {
-                Toast.makeText(this, "Enter both House No. and Address", Toast.LENGTH_SHORT).show()
+            // Input validation
+            if (address.isBlank() || price == null || commission == null ||
+                (isDownpayment && downpayment == null)
+            ) {
+                Toast.makeText(this, "Please fill in all fields correctly.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            // Load existing list
+            val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val gson = Gson()
+            val json = sharedPref.getString("addressList", null)
+            val type = object : TypeToken<MutableList<Address>>() {}.type
+            val addressList: MutableList<Address> =
+                if (json != null) gson.fromJson(json, type) else mutableListOf()
+
+            // Add new Address
+            val newAddress = Address(
+                address = address,
+                price = price,
+                commission = commission,
+                paymentOption = paymentOption,
+                isDownpayment = isDownpayment,
+                downpayment = downpayment
+            )
+            addressList.add(newAddress)
+
+            // Save updated list
+            val updatedJson = gson.toJson(addressList)
+            sharedPref.edit().putString("addressList", updatedJson).apply()
+
+            Toast.makeText(this, "House info saved!", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }

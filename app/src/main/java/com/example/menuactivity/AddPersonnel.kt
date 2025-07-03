@@ -2,37 +2,37 @@ package com.example.menuactivity
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class AddPersonnel : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_add_personnel)
 
         val nameInput = findViewById<EditText>(R.id.prsn)
-        val idnumInput = findViewById<EditText>(R.id.idnum)
+        val ageInput = findViewById<EditText>(R.id.age)
+        val emailInput = findViewById<EditText>(R.id.email)
+        val contactInput = findViewById<EditText>(R.id.contact)
         val saveButton = findViewById<Button>(R.id.btnsave)
+        val exitButton = findViewById<Button>(R.id.back)
 
-        val exitbtn = findViewById<Button>(R.id.back)
-        exitbtn.setOnClickListener {
+        exitButton.setOnClickListener {
             finish()
         }
 
         saveButton.setOnClickListener {
-            val name = nameInput.text.toString()
-            val idnum = idnumInput.text.toString()
+            val name = nameInput.text.toString().trim()
+            val ageText = ageInput.text.toString().trim()
+            val email = emailInput.text.toString().trim()
+            val contact = contactInput.text.toString().trim()
+            val age = ageText.toIntOrNull()
 
-            if (name.isNotBlank() && idnum.isNotBlank()) {
+            if (name.isNotBlank() && age != null && email.isNotBlank() && contact.isNotBlank()) {
                 val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                 val gson = Gson()
 
@@ -42,19 +42,23 @@ class AddPersonnel : AppCompatActivity() {
                 val personList: MutableList<Person> =
                     if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-                // Add new person
-                personList.add(Person(name, idnum))
+                // Create new person
+                val newPerson = Person(
+                    name = name,
+                    age = age,
+                    email = email,
+                    contact = contact
+                )
+
+                personList.add(newPerson)
 
                 // Save updated list
-                val updatedJson = gson.toJson(personList)
-                sharedPref.edit().putString("personList", updatedJson).apply()
+                sharedPref.edit().putString("personList", gson.toJson(personList)).apply()
 
-
-
-                Toast.makeText(this, "Data saved!", Toast.LENGTH_SHORT).show()
-                finish() // Optional: return to menu
+                Toast.makeText(this, "Personnel added!", Toast.LENGTH_SHORT).show()
+                finish()
             } else {
-                Toast.makeText(this, "Please enter both Name and ID", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill in all fields correctly", Toast.LENGTH_SHORT).show()
             }
         }
     }

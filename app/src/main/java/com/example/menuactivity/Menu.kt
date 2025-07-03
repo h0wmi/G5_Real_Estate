@@ -23,6 +23,12 @@ class Menu : AppCompatActivity() {
             val intent = Intent(this, House::class.java)
             startActivity(intent)
         })
+
+        val registerBtn = findViewById<Button>(R.id.btn3)
+        registerBtn.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, RegisterHouseActivity::class.java)
+            startActivity(intent)
+        })
     }
 
 }

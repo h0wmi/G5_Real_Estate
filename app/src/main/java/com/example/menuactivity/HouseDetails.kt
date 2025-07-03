@@ -4,45 +4,59 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class HouseDetails : AppCompatActivity() {
+
     private lateinit var currentAddress: Address
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_house_details)
 
-        val houseNumber = intent.getStringExtra("houseNumber") ?: ""
+        // Retrieve data from intent
+        val id = intent.getIntExtra("id", -1)
         val address = intent.getStringExtra("address") ?: ""
-        currentAddress = Address(houseNumber, address)
+        val price = intent.getDoubleExtra("price", 0.0)
+        val commission = intent.getDoubleExtra("commission", 0.0)
+        val paymentOption = intent.getStringExtra("paymentOption") ?: ""
+        val downpayment = intent.getDoubleExtra("downpayment", 0.0)
+        val isDownpayment = paymentOption == "Downpayment"
+        val idText = findViewById<TextView>(R.id.idText)
 
-        val houseNumText = findViewById<TextView>(R.id.hnum)
-        val addressText = findViewById<TextView>(R.id.add)
-        val exitBtn = findViewById<Button>(R.id.back)
-        val updateBtn = findViewById<Button>(R.id.btnUpdate)
-        val deleteBtn = findViewById<Button>(R.id.btnDelete)
 
-        houseNumText.text = "House Number: $houseNumber"
-        addressText.text = "Address: $address"
+        currentAddress = Address(id, address, price, commission, paymentOption, isDownpayment, if (isDownpayment) downpayment else null)
 
-        exitBtn.setOnClickListener {
+        idText.text = "ID: $id"
+        findViewById<TextView>(R.id.add).text = "Address: $address"
+        findViewById<TextView>(R.id.price).text = "Price: ₱$price"
+        findViewById<TextView>(R.id.commission).text = "Commission: $commission%"
+        findViewById<TextView>(R.id.paymentOption).text = "Payment Option: $paymentOption"
+
+        val downpaymentText = findViewById<TextView>(R.id.downpayment)
+        if (isDownpayment) {
+            downpaymentText.text = "Downpayment: ₱$downpayment"
+            downpaymentText.visibility = TextView.VISIBLE
+        } else {
+            downpaymentText.visibility = TextView.GONE
+        }
+
+        findViewById<Button>(R.id.back).setOnClickListener {
             finish()
         }
 
-        updateBtn.setOnClickListener {
+        findViewById<Button>(R.id.btnUpdate).setOnClickListener {
             val intent = Intent(this, EditHouse::class.java)
-            intent.putExtra("houseNumber", currentAddress.houseNumber)
-            intent.putExtra("address", currentAddress.address)
+            val gson = Gson()
+            val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPref.edit().putString("selectedHouse", gson.toJson(currentAddress)).apply()
             startActivityForResult(intent, UPDATE_REQUEST_CODE)
         }
 
-        deleteBtn.setOnClickListener {
+        findViewById<Button>(R.id.btnDelete).setOnClickListener {
             showDeleteConfirmation()
         }
     }
@@ -50,10 +64,8 @@ class HouseDetails : AppCompatActivity() {
     private fun showDeleteConfirmation() {
         AlertDialog.Builder(this)
             .setTitle("Delete House")
-            .setMessage("Are you sure you want to delete this house record?\n\nHouse Number: ${currentAddress.houseNumber}\nAddress: ${currentAddress.address}")
-            .setPositiveButton("Delete") { _, _ ->
-                deleteHouse()
-            }
+            .setMessage("Are you sure you want to delete this house record?\n\nAddress: ${currentAddress.address}")
+            .setPositiveButton("Delete") { _, _ -> deleteHouse() }
             .setNegativeButton("Cancel", null)
             .show()
     }
@@ -64,23 +76,11 @@ class HouseDetails : AppCompatActivity() {
 
         val json = sharedPref.getString("addressList", null)
         val type = object : TypeToken<MutableList<Address>>() {}.type
-        val addressList: MutableList<Address> =
-            if (json != null) gson.fromJson(json, type) else mutableListOf()
+        val addressList: MutableList<Address> = if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-        // Find and remove the address
-        val iterator = addressList.iterator()
-        while (iterator.hasNext()) {
-            val addr = iterator.next()
-            if (addr.houseNumber == currentAddress.houseNumber &&
-                addr.address == currentAddress.address) {
-                iterator.remove()
-                break
-            }
-        }
+        addressList.removeIf { it.id == currentAddress.id }
 
-        // Save updated list
-        val updatedJson = gson.toJson(addressList)
-        sharedPref.edit().putString("addressList", updatedJson).apply()
+        sharedPref.edit().putString("addressList", gson.toJson(addressList)).apply()
 
         Toast.makeText(this, "House deleted successfully!", Toast.LENGTH_SHORT).show()
         finish()
@@ -89,8 +89,7 @@ class HouseDetails : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UPDATE_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Refresh the display if the house was updated
-            finish()
+            finish() // To refresh list
         }
     }
 

@@ -18,27 +18,42 @@ class pDetail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdetail)
 
+        val id = intent.getIntExtra("id", -1)
         val name = intent.getStringExtra("name") ?: ""
-        val idnum = intent.getStringExtra("idnum") ?: ""
-        currentPerson = Person(name, idnum)
+        val age = intent.getIntExtra("age", 0)
+        val email = intent.getStringExtra("email") ?: ""
+        val contact = intent.getStringExtra("contact") ?: ""
 
+        currentPerson = Person(id, name, age, email, contact)
+
+        // Views
         val nameText = findViewById<TextView>(R.id.nameText)
-        val idText = findViewById<TextView>(R.id.idText)
+        val ageText = findViewById<TextView>(R.id.ageText)
+        val emailText = findViewById<TextView>(R.id.emailText)
+        val contactText = findViewById<TextView>(R.id.contactText)
         val exitBtn = findViewById<Button>(R.id.back)
         val updateBtn = findViewById<Button>(R.id.btnUpdate)
         val deleteBtn = findViewById<Button>(R.id.btnDelete)
+        val idText = findViewById<TextView>(R.id.idText)
 
+        idText.text = "ID: $id"
         nameText.text = "Name: $name"
-        idText.text = "ID Number: $idnum"
+        ageText.text = "Age: $age"
+        emailText.text = "Email: $email"
+        contactText.text = "Contact: $contact"
 
         exitBtn.setOnClickListener {
             finish()
         }
 
         updateBtn.setOnClickListener {
-            val intent = Intent(this, EditPerson::class.java)
-            intent.putExtra("name", currentPerson.name)
-            intent.putExtra("idnum", currentPerson.idnum)
+            val intent = Intent(this, EditPerson::class.java).apply {
+                putExtra("id", currentPerson.id)
+                putExtra("name", currentPerson.name)
+                putExtra("age", currentPerson.age)
+                putExtra("email", currentPerson.email)
+                putExtra("contact", currentPerson.contact)
+            }
             startActivityForResult(intent, UPDATE_REQUEST_CODE)
         }
 
@@ -50,10 +65,8 @@ class pDetail : AppCompatActivity() {
     private fun showDeleteConfirmation() {
         AlertDialog.Builder(this)
             .setTitle("Delete Person")
-            .setMessage("Are you sure you want to delete this person record?\n\nName: ${currentPerson.name}\nID Number: ${currentPerson.idnum}")
-            .setPositiveButton("Delete") { _, _ ->
-                deletePerson()
-            }
+            .setMessage("Are you sure you want to delete this person?\n\nName: ${currentPerson.name}")
+            .setPositiveButton("Delete") { _, _ -> deletePerson() }
             .setNegativeButton("Cancel", null)
             .show()
     }
@@ -61,23 +74,21 @@ class pDetail : AppCompatActivity() {
     private fun deletePerson() {
         val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
-
         val json = sharedPref.getString("personList", null)
         val type = object : TypeToken<MutableList<Person>>() {}.type
         val personList: MutableList<Person> =
             if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-        // Find and remove the person
+        // Remove by unique ID
         val iterator = personList.iterator()
         while (iterator.hasNext()) {
             val person = iterator.next()
-            if (person.name == currentPerson.name && person.idnum == currentPerson.idnum) {
+            if (person.id == currentPerson.id) {
                 iterator.remove()
                 break
             }
         }
 
-        // Save updated list
         val updatedJson = gson.toJson(personList)
         sharedPref.edit().putString("personList", updatedJson).apply()
 
@@ -88,8 +99,7 @@ class pDetail : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UPDATE_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Refresh the display if the person was updated
-            finish()
+            finish() // Refresh view on return
         }
     }
 

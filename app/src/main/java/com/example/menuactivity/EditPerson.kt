@@ -1,6 +1,5 @@
 package com.example.menuactivity
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.widget.Button
@@ -11,76 +10,74 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class EditPerson : AppCompatActivity() {
-    private lateinit var originalPerson: Person
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_person)
 
         val nameInput = findViewById<EditText>(R.id.nameInput)
-        val idInput = findViewById<EditText>(R.id.idInput)
-        val updateBtn = findViewById<Button>(R.id.btnUpdate)
-        val cancelBtn = findViewById<Button>(R.id.btnCancel)
+        val ageInput = findViewById<EditText>(R.id.ageInput)
+        val emailInput = findViewById<EditText>(R.id.emailInput)
+        val contactInput = findViewById<EditText>(R.id.contactInput)
+        val btnUpdate = findViewById<Button>(R.id.btnUpdate)
+        val btnCancel = findViewById<Button>(R.id.btnCancel)
 
-        // Get original data
-        val originalName = intent.getStringExtra("name") ?: ""
-        val originalId = intent.getStringExtra("idnum") ?: ""
-        originalPerson = Person(originalName, originalId)
-
-        // Populate fields with existing data
-        nameInput.setText(originalName)
-        idInput.setText(originalId)
-
-        updateBtn.setOnClickListener {
-            val newName = nameInput.text.toString()
-            val newId = idInput.text.toString()
-
-            if (newName.isNotBlank() && newId.isNotBlank()) {
-                updatePerson(newName, newId)
-            } else {
-                Toast.makeText(this, "Enter both Name and ID Number", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        cancelBtn.setOnClickListener {
-            setResult(Activity.RESULT_CANCELED)
+        val personId = intent.getIntExtra("id", -1)
+        if (personId == -1) {
+            Toast.makeText(this, "Invalid person ID", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
-    }
 
-    private fun updatePerson(newName: String, newId: String) {
         val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
-
         val json = sharedPref.getString("personList", null)
         val type = object : TypeToken<MutableList<Person>>() {}.type
-        val personList: MutableList<Person> =
-            if (json != null) gson.fromJson(json, type) else mutableListOf()
+        val personList: MutableList<Person> = if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-        // Check if new ID already exists (only if it's different from original)
-        if (newId != originalPerson.idnum) {
-            val existingPerson = personList.find { it.idnum == newId }
-            if (existingPerson != null) {
-                Toast.makeText(this, "ID Number already exists!", Toast.LENGTH_SHORT).show()
-                return
+        val person = personList.find { it.id == personId }
+        if (person != null) {
+            nameInput.setText(person.name)
+            ageInput.setText(person.age.toString())
+            emailInput.setText(person.email)
+            contactInput.setText(person.contact)
+        } else {
+            Toast.makeText(this, "Person not found", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        btnUpdate.setOnClickListener {
+            val newName = nameInput.text.toString().trim()
+            val newAgeText = ageInput.text.toString().trim()
+            val newEmail = emailInput.text.toString().trim()
+            val newContact = contactInput.text.toString().trim()
+
+            val newAge = newAgeText.toIntOrNull()
+
+            if (newName.isNotBlank() && newAge != null && newEmail.isNotBlank() && newContact.isNotBlank()) {
+                val index = personList.indexOfFirst { it.id == personId }
+                if (index != -1) {
+                    personList[index] = Person(
+                        id = personId,
+                        name = newName,
+                        age = newAge,
+                        email = newEmail,
+                        contact = newContact
+                    )
+
+                    val updatedJson = gson.toJson(personList)
+                    sharedPref.edit().putString("personList", updatedJson).apply()
+
+                    Toast.makeText(this, "Person updated!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            } else {
+                Toast.makeText(this, "Please fill out all fields correctly", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Find and update the person
-        for (i in personList.indices) {
-            if (personList[i].name == originalPerson.name &&
-                personList[i].idnum == originalPerson.idnum) {
-                personList[i] = Person(newName, newId)
-                break
-            }
+        btnCancel.setOnClickListener {
+            finish()
         }
-
-        // Save updated list
-        val updatedJson = gson.toJson(personList)
-        sharedPref.edit().putString("personList", updatedJson).apply()
-
-        Toast.makeText(this, "Person updated successfully!", Toast.LENGTH_SHORT).show()
-        setResult(Activity.RESULT_OK)
-        finish()
     }
 }
