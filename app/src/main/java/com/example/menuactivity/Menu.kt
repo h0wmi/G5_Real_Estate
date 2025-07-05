@@ -24,9 +24,9 @@ class Menu : AppCompatActivity() {
             startActivity(intent)
         })
 
-        val registerBtn = findViewById<Button>(R.id.btn3)
-        registerBtn.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, RegisterHouseActivity::class.java)
+        val purchaseBtn = findViewById<Button>(R.id.btn3)
+        purchaseBtn.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, PurchaseHouseActivity::class.java)
             startActivity(intent)
         })
     }

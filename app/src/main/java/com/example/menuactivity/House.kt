@@ -28,8 +28,6 @@ class House : AppCompatActivity() {
         })
 
 
-        // CHANGE
-
 
         val mainBtn = findViewById<Button>(R.id.btn4)
         mainBtn.setOnClickListener(View.OnClickListener {

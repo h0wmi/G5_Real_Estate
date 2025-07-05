@@ -75,7 +75,7 @@
                 android:id="@+id/btn3"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Register House"
+                android:text="Purchase House"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"

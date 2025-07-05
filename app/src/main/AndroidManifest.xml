@@ -13,7 +13,7 @@
         android:theme="@style/Theme.MenuActivity"
         tools:targetApi="31">
         <activity
-            android:name=".RegisterHouseActivity"
+            android:name=".PurchaseHouseActivity"
             android:exported="false" />
         <activity
             android:name=".EditPerson"

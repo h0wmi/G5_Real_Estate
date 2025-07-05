@@ -8,21 +8,21 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class RegisterHouseActivity : AppCompatActivity() {
+class PurchaseHouseActivity : AppCompatActivity() {
     private lateinit var houseSpinner: Spinner
     private lateinit var personnelSpinner: Spinner
     private lateinit var commissionText: TextView
-    private lateinit var registerButton: Button
+    private lateinit var purchaseButton: Button
     private lateinit var backButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_house)
+        setContentView(R.layout.activity_purchase_house)
 
         houseSpinner = findViewById(R.id.spinnerHouse)
         personnelSpinner = findViewById(R.id.spinnerPersonnel)
         commissionText = findViewById(R.id.commissionText)
-        registerButton = findViewById(R.id.registerButton)
+        purchaseButton = findViewById(R.id.purchaseButton)
         backButton = findViewById(R.id.back)
 
         val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
@@ -56,11 +56,11 @@ class RegisterHouseActivity : AppCompatActivity() {
         }
 
 
-        registerButton.setOnClickListener {
+        purchaseButton.setOnClickListener {
             val selectedHouse = houseList[houseSpinner.selectedItemPosition]
             val selectedPerson = personList[personnelSpinner.selectedItemPosition]
 
-            Toast.makeText(this, "${selectedHouse.address} registered to ${selectedPerson.name}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "${selectedHouse.address} linked to ${selectedPerson.name}", Toast.LENGTH_LONG).show()
         }
 
         backButton.setOnClickListener {
