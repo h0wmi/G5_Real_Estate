@@ -1,5 +1,6 @@
 package com.example.menuactivity
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -47,13 +48,10 @@ class pDetail : AppCompatActivity() {
         }
 
         updateBtn.setOnClickListener {
-            val intent = Intent(this, EditPerson::class.java).apply {
-                putExtra("id", currentPerson.id)
-                putExtra("name", currentPerson.name)
-                putExtra("age", currentPerson.age)
-                putExtra("email", currentPerson.email)
-                putExtra("contact", currentPerson.contact)
-            }
+            val intent = Intent(this, EditPerson::class.java)
+            val gson = Gson()
+            val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPref.edit().putString("selectedPerson", gson.toJson(currentPerson)).apply()
             startActivityForResult(intent, UPDATE_REQUEST_CODE)
         }
 
