@@ -13,7 +13,7 @@ data class Person(
         fun nextId(context: Context): Int {
             val sharedPref = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             val currentId = sharedPref.getInt("personnelCurrentId", 2023100)
-            sharedPref.edit().putInt("addressCurrentId", currentId + 1).apply()
+            sharedPref.edit().putInt("personnelCurrentId", currentId + 1).apply()
             return currentId
         }
     }
