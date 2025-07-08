@@ -65,14 +65,7 @@
                     android:padding="12dp"
                     android:background="@android:drawable/btn_dropdown" />
 
-                <TextView
-                    android:id="@+id/commissionText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Total Commission: "
-                    android:layout_marginTop="16dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+
 
 
                 <LinearLayout

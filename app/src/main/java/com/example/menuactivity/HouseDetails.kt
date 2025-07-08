@@ -28,8 +28,15 @@ class HouseDetails : AppCompatActivity() {
         val isDownpayment = paymentOption == "Downpayment"
         val idText = findViewById<TextView>(R.id.idText)
 
-
-        currentAddress = Address(id, address, price, commission, paymentOption, isDownpayment, if (isDownpayment) downpayment else null)
+        currentAddress = Address(
+            id = id,
+            address = address,
+            price = price,
+            commission = commission,
+            paymentOption = paymentOption,
+            isDownpayment = isDownpayment,
+            downpayment = if (isDownpayment) downpayment else null
+        )
 
         idText.text = "ID: $id"
         findViewById<TextView>(R.id.add).text = "Address: $address"
@@ -79,6 +86,7 @@ class HouseDetails : AppCompatActivity() {
         val type = object : TypeToken<MutableList<Address>>() {}.type
         val addressList: MutableList<Address> = if (json != null) gson.fromJson(json, type) else mutableListOf()
 
+        // Only removes the one with matching unique ID
         addressList.removeIf { it.id == currentAddress.id }
 
         sharedPref.edit().putString("addressList", gson.toJson(addressList)).apply()
@@ -90,7 +98,7 @@ class HouseDetails : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UPDATE_REQUEST_CODE && resultCode == RESULT_OK) {
-            finish() // To refresh list
+            finish() // Refreshes list
         }
     }
 

@@ -1,7 +1,9 @@
 package com.example.menuactivity
 
+import android.content.Context
+
 data class Address(
-    val id: Int = nextId(),
+    val id: Int,
     val address: String,
     val price: Double,
     val commission: Double,
@@ -10,7 +12,11 @@ data class Address(
     val downpayment: Double? = null
 ) {
     companion object {
-        private var currentId = 102000
-        private fun nextId(): Int = currentId++
+        fun nextId(context: Context): Int {
+            val sharedPref = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val currentId = sharedPref.getInt("addressCurrentId", 102000)
+            sharedPref.edit().putInt("addressCurrentId", currentId + 1).apply()
+            return currentId
+        }
     }
 }

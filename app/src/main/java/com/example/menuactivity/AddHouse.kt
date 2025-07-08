@@ -22,7 +22,6 @@ class AddHouse : AppCompatActivity() {
         val saveBtn = findViewById<Button>(R.id.btnsave)
         val backBtn = findViewById<Button>(R.id.back)
 
-        // Show/hide downpayment input based on payment option
         paymentOptionGroup.setOnCheckedChangeListener { _, checkedId ->
             downpaymentInput.visibility =
                 if (checkedId == R.id.rbDownpayment) View.VISIBLE else View.GONE
@@ -43,7 +42,6 @@ class AddHouse : AppCompatActivity() {
                 downpaymentInput.text.toString().toDoubleOrNull()
             } else null
 
-            // Input validation
             if (address.isBlank() || price == null || commission == null ||
                 (isDownpayment && downpayment == null)
             ) {
@@ -51,7 +49,6 @@ class AddHouse : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Load existing list
             val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             val gson = Gson()
             val json = sharedPref.getString("addressList", null)
@@ -59,8 +56,10 @@ class AddHouse : AppCompatActivity() {
             val addressList: MutableList<Address> =
                 if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-            // Add new Address
+            val newId = Address.nextId(this)
+
             val newAddress = Address(
+                id = newId,
                 address = address,
                 price = price,
                 commission = commission,
@@ -68,11 +67,10 @@ class AddHouse : AppCompatActivity() {
                 isDownpayment = isDownpayment,
                 downpayment = downpayment
             )
+
             addressList.add(newAddress)
 
-            // Save updated list
-            val updatedJson = gson.toJson(addressList)
-            sharedPref.edit().putString("addressList", updatedJson).apply()
+            sharedPref.edit().putString("addressList", gson.toJson(addressList)).apply()
 
             Toast.makeText(this, "House info saved!", Toast.LENGTH_SHORT).show()
             finish()

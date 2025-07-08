@@ -25,9 +25,10 @@ class EditHouse : AppCompatActivity() {
         val updateBtn = findViewById<Button>(R.id.btnUpdate)
         val cancelBtn = findViewById<Button>(R.id.btnCancel)
 
-        // Load original selected house
         val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
+
+        // Load selected house from SharedPreferences
         val json = sharedPref.getString("selectedHouse", null)
         val type = object : TypeToken<Address>() {}.type
 
@@ -39,7 +40,7 @@ class EditHouse : AppCompatActivity() {
 
         originalAddress = gson.fromJson(json, type)
 
-        // Populate UI fields
+        // Populate input fields with existing data
         addressInput.setText(originalAddress.address)
         priceInput.setText(originalAddress.price.toString())
         commissionInput.setText(originalAddress.commission.toString())
@@ -53,7 +54,7 @@ class EditHouse : AppCompatActivity() {
             downpaymentInput.visibility = View.GONE
         }
 
-        // Toggle visibility
+        // Handle visibility toggle
         paymentTypeGroup.setOnCheckedChangeListener { _, checkedId ->
             downpaymentInput.visibility = if (checkedId == R.id.downPayment) View.VISIBLE else View.GONE
         }
@@ -67,12 +68,12 @@ class EditHouse : AppCompatActivity() {
                 downpaymentInput.text.toString().toDoubleOrNull()
             } else null
 
-            if (newAddress.isBlank() || newPrice == null || newCommission == null || (isDownpayment && newDownpayment == null)) {
-                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+            if (newAddress.isBlank() || newPrice == null || newCommission == null ||
+                (isDownpayment && newDownpayment == null)) {
+                Toast.makeText(this, "Please fill in all fields correctly.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Create updated Address
             val updatedAddress = Address(
                 id = originalAddress.id,
                 address = newAddress,
@@ -83,13 +84,16 @@ class EditHouse : AppCompatActivity() {
                 downpayment = newDownpayment
             )
 
-            // Load address list
+            // Load address list from shared preferences
             val listJson = sharedPref.getString("addressList", null)
             val listType = object : TypeToken<MutableList<Address>>() {}.type
-            val addressList: MutableList<Address> =
-                if (listJson != null) gson.fromJson(listJson, listType) else mutableListOf()
+            val addressList: MutableList<Address> = if (listJson != null) {
+                gson.fromJson(listJson, listType)
+            } else {
+                mutableListOf()
+            }
 
-            // Replace the original
+            // Replace the old record by ID
             val index = addressList.indexOfFirst { it.id == originalAddress.id }
             if (index != -1) {
                 addressList[index] = updatedAddress
@@ -98,7 +102,7 @@ class EditHouse : AppCompatActivity() {
                 setResult(Activity.RESULT_OK)
                 finish()
             } else {
-                Toast.makeText(this, "Original house not found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Original house not found.", Toast.LENGTH_SHORT).show()
             }
         }
 

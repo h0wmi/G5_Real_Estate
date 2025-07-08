@@ -38,7 +38,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/custom_edittext"
-                android:drawableStart="@drawable/user"
                 android:drawablePadding="8dp"
                 android:hint="Personnel Name"
                 android:padding="8dp"
