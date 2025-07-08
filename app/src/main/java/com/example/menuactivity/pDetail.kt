@@ -72,12 +72,14 @@ class pDetail : AppCompatActivity() {
     private fun deletePerson() {
         val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
-        val json = sharedPref.getString("personList", null)
-        val type = object : TypeToken<MutableList<Person>>() {}.type
-        val personList: MutableList<Person> =
-            if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-        // Remove by unique ID
+        // Get and update person list
+        val personJson = sharedPref.getString("personList", null)
+        val personType = object : TypeToken<MutableList<Person>>() {}.type
+        val personList: MutableList<Person> =
+            if (personJson != null) gson.fromJson(personJson, personType) else mutableListOf()
+
+        // Remove current person
         val iterator = personList.iterator()
         while (iterator.hasNext()) {
             val person = iterator.next()
@@ -87,12 +89,27 @@ class pDetail : AppCompatActivity() {
             }
         }
 
-        val updatedJson = gson.toJson(personList)
-        sharedPref.edit().putString("personList", updatedJson).apply()
+        // Save updated person list
+        val updatedPersonJson = gson.toJson(personList)
+        sharedPref.edit().putString("personList", updatedPersonJson).apply()
+
+        //Unlink any PurchasedHouse entries related to this person
+        val purchaseJson = sharedPref.getString("purchased_house", null)
+        val purchaseType = object : TypeToken<MutableList<PurchasedHouse>>() {}.type
+        val purchaseList: MutableList<PurchasedHouse> =
+            if (purchaseJson != null) gson.fromJson(purchaseJson, purchaseType) else mutableListOf()
+
+        val updatedPurchaseList = purchaseList.filterNot {
+            it.personnelName == currentPerson.name
+        }
+
+        sharedPref.edit().putString("purchased_house", gson.toJson(updatedPurchaseList)).apply()
 
         Toast.makeText(this, "Person deleted successfully!", Toast.LENGTH_SHORT).show()
+        setResult(Activity.RESULT_OK)
         finish()
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

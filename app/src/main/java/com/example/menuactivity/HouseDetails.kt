@@ -86,14 +86,27 @@ class HouseDetails : AppCompatActivity() {
         val type = object : TypeToken<MutableList<Address>>() {}.type
         val addressList: MutableList<Address> = if (json != null) gson.fromJson(json, type) else mutableListOf()
 
-        // Only removes the one with matching unique ID
         addressList.removeIf { it.id == currentAddress.id }
 
+        // Save updated address list
         sharedPref.edit().putString("addressList", gson.toJson(addressList)).apply()
+
+        //Unlink any PurchasedHouse entries related to this house
+        val purchaseJson = sharedPref.getString("purchased_house", null)
+        val purchaseType = object : TypeToken<MutableList<PurchasedHouse>>() {}.type
+        val purchaseList: MutableList<PurchasedHouse> =
+            if (purchaseJson != null) gson.fromJson(purchaseJson, purchaseType) else mutableListOf()
+
+        val updatedPurchaseList = purchaseList.filterNot {
+            it.houseId == currentAddress.id
+        }
+
+        sharedPref.edit().putString("purchased_house", gson.toJson(updatedPurchaseList)).apply()
 
         Toast.makeText(this, "House deleted successfully!", Toast.LENGTH_SHORT).show()
         finish()
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

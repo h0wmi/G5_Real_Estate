@@ -42,8 +42,11 @@ class AddPersonnel : AppCompatActivity() {
                 val personList: MutableList<Person> =
                     if (json != null) gson.fromJson(json, type) else mutableListOf()
 
+                val newId = Person.nextId(this)
+
                 // Create new person
                 val newPerson = Person(
+                    id = newId,
                     name = name,
                     age = age,
                     email = email,

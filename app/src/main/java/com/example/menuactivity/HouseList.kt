@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken
 class HouseList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_house_list)
 
         val listView = findViewById<ListView>(R.id.addressListView)
@@ -60,4 +59,8 @@ class HouseList : AppCompatActivity() {
             finish()
         }
     }
+
+
+
+
 }
